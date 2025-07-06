@@ -27,10 +27,12 @@ pub mod vault {
     }
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+        // send deposited money to anyone
         ctx.accounts.withdraw(amount)
     }
 
     pub fn close(ctx: Context<Close>) -> Result<()> {
+        // send deposited money back to signer and close the vault
         ctx.accounts.close()
     }
 }
