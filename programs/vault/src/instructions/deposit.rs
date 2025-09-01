@@ -20,7 +20,7 @@ pub struct Deposit<'info> {
         init,
         payer = user,
         space = DISCRIMINATOR + Vault::INIT_SPACE,
-        seeds = [b"vault_state", user.key().as_ref()],
+        seeds = [b"state", user.key().as_ref()],
         bump
     )]
     pub vault_state: Account<'info, Vault>,
@@ -29,8 +29,12 @@ pub struct Deposit<'info> {
 }
 
 impl<'info> Deposit<'info> {
-    pub fn deposit_to_vault(&mut self, amount: u64) -> Result<()> {
+    pub fn deposit_to_vault(&mut self, amount: u64, vault_bump: u8, state_bump: u8) -> Result<()> {
         require!(amount.gt(&0), VaultError::ZeroAmount);
+
+        // Store the bumps in the vault state
+        self.vault_state.vault_bump = vault_bump;
+        self.vault_state.state_bump = state_bump;
 
         //simple transfer cpi
         let cpi_program = self.system_program.to_account_info();

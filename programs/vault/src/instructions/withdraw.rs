@@ -1,4 +1,7 @@
-use anchor_lang::{prelude::*, system_program::{transfer, Transfer}};
+use anchor_lang::{
+    prelude::*,
+    system_program::{transfer, Transfer},
+};
 
 use crate::{error::VaultError, Vault};
 
@@ -19,7 +22,7 @@ pub struct Withdraw<'info> {
 
     #[account(
         seeds = [
-            b"vault_state",
+            b"state",
             user.key().as_ref()
         ],
         bump = vault_state.state_bump
@@ -42,7 +45,7 @@ impl<'info> Withdraw<'info> {
         };
 
         let signer_seeds = [
-            b"vault_state",
+            b"vault",
             self.vault_state.to_account_info().key.as_ref(),
             &[self.vault_state.vault_bump],
         ];
@@ -52,7 +55,7 @@ impl<'info> Withdraw<'info> {
         let cpi_context = CpiContext::new_with_signer(cpi_program, cpi_accounts, seeds);
 
         transfer(cpi_context, amount)?;
-        
+
         Ok(())
     }
 }

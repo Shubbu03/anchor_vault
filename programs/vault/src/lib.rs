@@ -17,7 +17,10 @@ pub mod vault {
     use super::*;
 
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
-        ctx.accounts.deposit_to_vault(amount)
+        let vault_bump = ctx.bumps.vault;
+        let state_bump = ctx.bumps.vault_state;
+        ctx.accounts
+            .deposit_to_vault(amount, vault_bump, state_bump)
     }
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
